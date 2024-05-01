@@ -63,7 +63,20 @@ public class JSON {
     if (-1 == ch) {
       throw new ParseException("Unexpected end of file", pos);
     }
-    // STUB
+    // while not the end of file
+
+    // find the opening bracket (put in stack?)
+
+    // skip whitespaces, look for ", if yes store it as string
+
+    // if after : is " - it's an int or string
+    
+    // if it's a digit it's a float
+    
+    // if { is an object
+      
+    // and if [ is an array
+    
     throw new ParseException("Unimplemented", pos);
   } // parseKernel
 
