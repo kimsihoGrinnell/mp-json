@@ -1,0 +1,8 @@
+"key" : "value",
+"number" : 0.01 ,
+     "constant"   : null,
+     "nested_hash" : {
+        "nestKey" : 203.29,
+        "nestConst" : false
+     }
+}

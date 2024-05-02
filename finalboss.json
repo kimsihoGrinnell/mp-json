@@ -1,0 +1,14 @@
+{
+    "key": "value",
+    "integer": 687,
+    "real": 111.2,
+    "constant": true,
+    "nestedHash" : {
+        "nestKey" : false,
+        "nestReal" : 222.1
+    },
+    "array" : [
+        1, 2, 3, 4, 5
+    ],
+    "emptyString" : ""
+}

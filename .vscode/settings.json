@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "."
+    ],
+    "java.project.referencedLibraries": [
+        "d:\\桌面\\CSC\\CSC-207\\junit-platform-console-standalone-1.10.0.jar"
+    ]
+}
