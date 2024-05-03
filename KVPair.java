@@ -1,5 +1,6 @@
 /**
  * Simple, immutable, key/value pairs
+ * @author Samuel A. Rebelsky
  */
 public class KVPair<K,V> {
 
@@ -46,7 +47,7 @@ public class KVPair<K,V> {
    * Compare for equality.
    */
   public boolean equals(KVPair<K,V> other) {
-    return ((this.key.equals(other.key)) && (this.value.equals(other.value)));
+    return this == other;
   } // equals(KVPair<K,V>)
 
   /**

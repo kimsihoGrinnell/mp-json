@@ -5,6 +5,9 @@ import java.util.Random;
 
 /**
  * JSON hashes/objects.
+ * @author Samuel A. Rebelsky
+ * @author Candice Lu
+ * @author Siho Kim
  */
 public class JSONHash implements JSONValue {
 
@@ -57,8 +60,10 @@ public class JSONHash implements JSONValue {
    */
   public String toString() {
     String str = "";
-    while (this.iterator().hasNext()) {
-      str = str + this.iterator().next().toString();
+    Iterator<KVPair<JSONString, JSONValue>> itr = this.iterator();
+    while (itr.hasNext()) {
+      System.out.println(str);
+      str = str + itr.next().toString() + "\n";
     }
     return str;
   } // toString()
@@ -67,8 +72,13 @@ public class JSONHash implements JSONValue {
    * Compare to another object.
    */
   public boolean equals(Object other) {
-    if (toString().equals(other.toString())) {
-      return true;
+    if (other instanceof JSONHash) {
+      JSONHash otherHash = (JSONHash) other;
+      if (otherHash.buckets.equals(this.buckets)) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -131,52 +141,75 @@ public class JSONHash implements JSONValue {
     } // get
   } // get(JSONString)
 
-  /**
-   * Get all of the key/value pairs.
-   */
+
+  // +----------+-------------------------------------------
+  // | Iterator |
+  // +----------+
+
   public Iterator<KVPair<JSONString, JSONValue>> iterator() {
 
     return new Iterator<KVPair<JSONString, JSONValue>>() {
       
-      //Fields
+      // +--------+------------------------------------------------------
+      // | Fields |
+      // +--------+
 
-      // position inside the bucket
+      /**
+       * position inside the bucket array
+       */
       int curBucket = 0;
 
-      int curValue = 0;
+      /**
+       * position inside the bucket
+       */
+      int curValue = -1;
       
+      /**
+       * counter to track how many KVPairs we have already iterated through
+       */
+      int counter = 0;
 
+      /*
+       * returns true if there are still KVPairs in remaining buckets
+       */
       public boolean hasNext() {
-        if (this.curBucket < JSONHash.this.buckets.length) {
-          return true;
-        } else {
-          ArrayList<KVPair<JSONString, JSONValue>> buck = (ArrayList<KVPair<JSONString, JSONValue>>)JSONHash.this.buckets[curBucket];
-          if (this.curValue < buck.size() - 1) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      }
+        return counter < JSONHash.this.size();
+      } // hasNext()
 
+      /*
+       * returns next KVPair in the JSONHash
+       */
       public KVPair<JSONString, JSONValue> next() {
-        // if we are at the end of bucket, go to next bucket
-        if (hasNext()) {
-          ArrayList<KVPair<JSONString, JSONValue>> buck = (ArrayList<KVPair<JSONString, JSONValue>>)JSONHash.this.buckets[curBucket];
-          if (this.curValue == buck.size() - 1) {
-            curBucket++;
-            this.curValue = 0;
-            ArrayList<KVPair<JSONString, JSONValue>> nextBucket = (ArrayList<KVPair<JSONString, JSONValue>>)JSONHash.this.buckets[curBucket];
-            return nextBucket.get(curValue);
-          } else {
-            // else we give the next value and move cursor to next value in the bucket
-            this.curValue++;
-            return buck.get(curValue);
-          }            
+        ArrayList<KVPair<JSONString, JSONValue>> bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
+
+        //If bucket is null, skip forward to the next non-null bucket
+        while (bucket == null) {
+          curBucket++;
+          bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
+        }
+        
+        // if we return something, we increment counter
+        counter++;
+        
+        curValue++;
+        //If there is a value ahead
+        if (curValue < bucket.size()) {
+          return bucket.get(curValue);
         } else {
-          return null;
-        }            
-      }
+          //Next Bucket
+          curBucket++;
+          bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
+
+          //If bucket is empty, find a new one
+          while (bucket == null) {
+            curBucket++;
+            bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
+          }
+
+          curValue = 0;
+          return bucket.get(curValue);
+        }
+      } // next()
     };
   } //Iterator
  
@@ -203,6 +236,7 @@ public class JSONHash implements JSONValue {
       pair = alist.get(i);
       if (pair.key().equals(key)) {
         alist.set(i, new KVPair<JSONString, JSONValue>(key, value));
+        return;
       }
     }
     alist.add(new KVPair<JSONString, JSONValue>(key, value));

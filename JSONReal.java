@@ -3,6 +3,9 @@ import java.math.BigDecimal;
 
 /**
  * JSON reals.
+ * @author Samuel A. Rebelsky
+ * @author Candice Lu
+ * @author Siho Kim
  */
 public class JSONReal implements JSONValue {
 
@@ -55,7 +58,7 @@ public class JSONReal implements JSONValue {
    * Compare to another object.
    */
   public boolean equals(Object other) {
-    return this.value.equals(other);
+    return this.toString().equals(other.toString());
   } // equals(Object)
 
   /**

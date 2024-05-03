@@ -2,6 +2,9 @@ import java.io.PrintWriter;
 
 /**
  * JSON constants.
+ * @author Samuel A. Rebelsky
+ * @author Candice Lu
+ * @author Siho Kim
  */
 public class JSONConstant implements JSONValue {
 
@@ -63,9 +66,7 @@ public class JSONConstant implements JSONValue {
    * Compare to another object.
    */
   public boolean equals(Object other) {
-    return ( ( (other instanceof JSONConstant) 
-               && (this.value == ((JSONConstant) other).value) )
-             || (this.value == other) );
+    return this.toString().equals(other.toString());
   } // equals(Object)
 
   /**

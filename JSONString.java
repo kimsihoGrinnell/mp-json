@@ -2,6 +2,9 @@ import java.io.PrintWriter;
 
 /**
  * JSON strings.
+ * @author Samuel A. Rebelsky
+ * @author Candice Lu
+ * @author Siho Kim
  */
 public class JSONString implements JSONValue {
 
@@ -40,7 +43,7 @@ public class JSONString implements JSONValue {
    * Compare to another object.
    */
   public boolean equals(Object other) {
-    return this.value.equals(other);
+    return this.value.toString().equals((other.toString()));
   } // equals(Object)
 
   /**

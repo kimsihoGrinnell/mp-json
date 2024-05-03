@@ -81,14 +81,12 @@ public class JSON {
       return parseHash(source); 
     } else if (ch == Character.valueOf('-')){
       return parseNegNum(source, ch);
-      // System.out.println(num.toString());
-      // return parseNegNum();
     } else if (ch == Character.valueOf('f') || ch == Character.valueOf('t') || ch == Character.valueOf('n')) {
       return parseConstant(source, ch);
     } else if (ch == Character.valueOf('[')) {
       return parseArray(source);
     } else {
-      throw new ParseException("Illegal opening", pos);
+      throw new ParseException("Illegal opening" + (char)ch, pos);
     }
   } // parseKernel
 
@@ -100,7 +98,7 @@ public class JSON {
     do {
       JSONValue key = parseKernel(source);
       if (!(key instanceof JSONString)) {
-        throw new ParseException("Illegal key value", pos);
+        throw new ParseException("Illegal key value" + key, pos);
       }
       ch = skipWhitespace(source);
       if (ch != Character.valueOf(':')) {
@@ -171,7 +169,6 @@ public class JSON {
       throw new ParseException("Unexpected output while parsing negative number", pos);
     }
   }
-  
   
   public static JSONConstant parseConstant(Reader source, int ch) throws IOException, ParseException {
     String str = "" + (char) ch;

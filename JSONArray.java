@@ -4,6 +4,9 @@ import java.util.Iterator;
 
 /**
  * JSON arrays.
+ * @author Samuel A. Rebelsky
+ * @author Candice Lu
+ * @author Siho Kim
  */
 public class JSONArray implements JSONValue {
 
@@ -35,18 +38,18 @@ public class JSONArray implements JSONValue {
    * Convert to a string (e.g., for printing).
    */
   public String toString() {
-    String output = "{";
+    String output = "[";
     for (int i = 0; i < this.values.size(); i++) {
       output = output + this.values.get(i).toString() + ",\n";
     }
-     return output + "}";
+     return output + "]";
   } // toString()
 
   /**
    * Compare to another object.
    */
   public boolean equals(Object other) {
-    return this.values.equals(other);
+    return this.toString().equals(other.toString());
   } // equals(Object)
 
   /**
