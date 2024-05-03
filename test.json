@@ -1,0 +1,46 @@
+{
+  "a string": "string",
+  "b real": 1.2,
+  "c int": 3,
+  "d empty arr": [],
+  "e arr 1 simple": [
+      "1 simple test"
+  ],
+  "f arr 2 simple": [
+      4,
+      5.67
+  ],
+  "g arr empty nested": [
+      "nest test",
+      []
+  ],
+  "h arr non empty nested": [
+      [
+          "hi",
+          10
+      ],
+      8.9
+  ],
+  "i arr multiple nested": [
+      [],
+      [
+          1,
+          false
+      ]
+  ],
+  "j empty hash": {},
+  "k non empty hash": {
+      "key": "value"
+  },
+  "i nested hash": {
+      "nested": {
+          "test": true
+      }
+  },
+  "mixed nested": [
+      {
+          "accurate": null
+      }
+  ],
+  "final sanity": 2
+}

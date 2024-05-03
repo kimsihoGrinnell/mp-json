@@ -5,6 +5,7 @@ import java.util.Random;
 
 /**
  * JSON hashes/objects.
+ * 
  * @author Samuel A. Rebelsky
  * @author Candice Lu
  * @author Siho Kim
@@ -62,7 +63,6 @@ public class JSONHash implements JSONValue {
     String str = "";
     Iterator<KVPair<JSONString, JSONValue>> itr = this.iterator();
     while (itr.hasNext()) {
-      System.out.println(str);
       str = str + itr.next().toString() + "\n";
     }
     return str;
@@ -72,13 +72,20 @@ public class JSONHash implements JSONValue {
    * Compare to another object.
    */
   public boolean equals(Object other) {
-    if (other instanceof JSONHash) {
+    if (other instanceof JSONValue) {
       JSONHash otherHash = (JSONHash) other;
-      if (otherHash.buckets.equals(this.buckets)) {
-        return true;
-      } else {
-        return false;
+      int equality = 0;
+      Iterator<KVPair<JSONString, JSONValue>> itr = this.iterator();
+
+      while (itr.hasNext()) {
+
+        KVPair<JSONString, JSONValue> tempPair = itr.next();
+        if (otherHash.get(tempPair.key()).equals(tempPair.value())) {
+          equality++;
+          System.out.println(equality);
+        }
       }
+      return equality == this.size;
     } else {
       return false;
     }
@@ -141,7 +148,6 @@ public class JSONHash implements JSONValue {
     } // get
   } // get(JSONString)
 
-
   // +----------+-------------------------------------------
   // | Iterator |
   // +----------+
@@ -149,7 +155,7 @@ public class JSONHash implements JSONValue {
   public Iterator<KVPair<JSONString, JSONValue>> iterator() {
 
     return new Iterator<KVPair<JSONString, JSONValue>>() {
-      
+
       // +--------+------------------------------------------------------
       // | Fields |
       // +--------+
@@ -163,7 +169,7 @@ public class JSONHash implements JSONValue {
        * position inside the bucket
        */
       int curValue = -1;
-      
+
       /**
        * counter to track how many KVPairs we have already iterated through
        */
@@ -182,25 +188,25 @@ public class JSONHash implements JSONValue {
       public KVPair<JSONString, JSONValue> next() {
         ArrayList<KVPair<JSONString, JSONValue>> bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
 
-        //If bucket is null, skip forward to the next non-null bucket
+        // If bucket is null, skip forward to the next non-null bucket
         while (bucket == null) {
           curBucket++;
           bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
         }
-        
+
         // if we return something, we increment counter
         counter++;
-        
+
         curValue++;
-        //If there is a value ahead
+        // If there is a value ahead
         if (curValue < bucket.size()) {
           return bucket.get(curValue);
         } else {
-          //Next Bucket
+          // Next Bucket
           curBucket++;
           bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
 
-          //If bucket is empty, find a new one
+          // If bucket is empty, find a new one
           while (bucket == null) {
             curBucket++;
             bucket = (ArrayList<KVPair<JSONString, JSONValue>>) buckets[curBucket];
@@ -211,8 +217,8 @@ public class JSONHash implements JSONValue {
         }
       } // next()
     };
-  } //Iterator
- 
+  } // Iterator
+
   /**
    * Set the value associated with a key.
    */

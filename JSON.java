@@ -94,6 +94,17 @@ public class JSON {
   public static JSONHash parseHash(Reader source) throws IOException, ParseException {
     int ch;
     JSONHash hash = new JSONHash();
+
+    source.mark(5);
+    ch = skipWhitespace(source);
+
+    if ((char) ch == '}') {
+      return hash;
+    }
+
+    source.reset();
+    
+
     // continue to parse key value pairs until encounter end other than a comma
     do {
       JSONValue key = parseKernel(source);
@@ -119,6 +130,16 @@ public class JSON {
     int ch;
     JSONArray arr = new JSONArray();
     // continue to parse key value pairs until encounter end other than a comma
+
+    source.mark(5);
+    ch = skipWhitespace(source);
+
+    if ((char) ch == ']') {
+      return arr;
+    }
+
+    source.reset();
+
     do {
       JSONValue value = parseKernel(source);
       arr.add(value);
