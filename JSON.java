@@ -1,10 +1,7 @@
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.util.ArrayList;
 
 /**
  * Utilities for our simple implementation of JSON.
@@ -27,22 +24,23 @@ public class JSON {
    * Parse a string into JSON.
    */
   /*
-  public static JSONValue parse(String source) throws ParseException, IOException {
-    return parse(new StringReader(source));
-  } // parse(String)
-  */
+   * public static JSONValue parse(String source) throws ParseException,
+   * IOException {
+   * return parse(new StringReader(source));
+   * } // parse(String)
+   */
   /**
    * Parse a file into JSON.
    */
   /*
-  public static JSONValue parseFile(String filename) throws ParseException, IOException {
-    FileReader reader = new FileReader(filename);
-    JSONValue result = parse(reader);
-    reader.close();
-    return result;
-  } // parseFile(String)
-  */
-
+   * public static JSONValue parseFile(String filename) throws ParseException,
+   * IOException {
+   * FileReader reader = new FileReader(filename);
+   * JSONValue result = parse(reader);
+   * reader.close();
+   * return result;
+   * } // parseFile(String)
+   */
 
   /**
    * Parse JSON from a reader.
@@ -63,7 +61,8 @@ public class JSON {
   /**
    * Parse JSON from a reader, keeping track of the current position
    * check for opening characters for a JSONValue
-   * @throws ParseException 
+   * 
+   * @throws ParseException
    */
 
   static JSONValue parseKernel(Reader source) throws ParseException, IOException {
@@ -78,19 +77,23 @@ public class JSON {
     } else if (ch >= Character.valueOf('0') && ch <= Character.valueOf('9')) {
       return parseNumber(source, ch);
     } else if (ch == Character.valueOf('{')) {
-      return parseHash(source); 
-    } else if (ch == Character.valueOf('-')){
+      return parseHash(source);
+    } else if (ch == Character.valueOf('-')) {
       return parseNegNum(source, ch);
     } else if (ch == Character.valueOf('f') || ch == Character.valueOf('t') || ch == Character.valueOf('n')) {
       return parseConstant(source, ch);
     } else if (ch == Character.valueOf('[')) {
       return parseArray(source);
     } else {
-      throw new ParseException("Illegal opening" + (char)ch, pos);
+      throw new ParseException("Illegal opening" + (char) ch, pos);
     }
   } // parseKernel
 
-
+  /**
+   * Parses JSONHash using calls to other helper functions to cover everything
+   * inside a Hash,
+   * while catching empty Hashes as an edge case
+   */
   public static JSONHash parseHash(Reader source) throws IOException, ParseException {
     int ch;
     JSONHash hash = new JSONHash();
@@ -103,7 +106,6 @@ public class JSON {
     }
 
     source.reset();
-    
 
     // continue to parse key value pairs until encounter end other than a comma
     do {
@@ -116,16 +118,21 @@ public class JSON {
         throw new ParseException("Missing colon", pos);
       }
       JSONValue value = parseKernel(source);
-      hash.set((JSONString)key, value);
+      hash.set((JSONString) key, value);
       ch = skipWhitespace(source);
     } while (ch == Character.valueOf(','));
     // check if it's legal end
     if (ch != Character.valueOf('}')) {
-      throw new ParseException("Unexpected end " + (char)ch, pos);
+      throw new ParseException("Unexpected end " + (char) ch, pos);
     }
     return hash;
-  }
+  } // parseHash
 
+  /**
+   * Parses JSONArray using calls to other helper functions to cover everything
+   * inside a Hash,
+   * while catching empty Arrays as an edge case
+   */
   public static JSONArray parseArray(Reader source) throws IOException, ParseException {
     int ch;
     JSONArray arr = new JSONArray();
@@ -147,11 +154,19 @@ public class JSON {
     } while (ch == Character.valueOf(','));
     // check if it's legal end
     if (ch != Character.valueOf(']')) {
-      throw new ParseException("Unexpected end " + (char)ch, pos);
+      throw new ParseException("Unexpected end " + (char) ch, pos);
     }
     return arr;
-  }
+  } // parseArray
 
+  /**
+   * Parses a JSON string
+   * 
+   * @param source
+   * @return
+   * @throws IOException
+   * @throws ParseException
+   */
   public static JSONString parseString(Reader source) throws IOException, ParseException {
     String str = "";
     int ch = skipWhitespace(source);
@@ -163,21 +178,29 @@ public class JSON {
         } else if (ch == '"') {
           str += '\"';
         } else {
-          str += (char)ch;
+          str += (char) ch;
         }
         ch = source.read();
         continue;
       }
       str += (char) ch;
-      ch = source.read(); 
+      ch = source.read();
     }
     if (ch == -1) {
       throw new ParseException("Unexpected end", pos);
     }
     return new JSONString(str);
-  }
+  } // parseString
 
-
+  /**
+   * Parses a negative JSON number
+   * 
+   * @param source
+   * @param ch
+   * @return
+   * @throws IOException
+   * @throws ParseException
+   */
   public static JSONValue parseNegNum(Reader source, int ch) throws IOException, ParseException {
     JSONValue num = parseNumber(source, ch);
     String numStr = "-" + num.toString();
@@ -189,8 +212,17 @@ public class JSON {
     } else {
       throw new ParseException("Unexpected output while parsing negative number", pos);
     }
-  }
-  
+  } // parseNegNum
+
+  /**
+   * Parses a constant value (true/false)
+   * 
+   * @param source
+   * @param ch
+   * @return
+   * @throws IOException
+   * @throws ParseException
+   */
   public static JSONConstant parseConstant(Reader source, int ch) throws IOException, ParseException {
     String str = "" + (char) ch;
     ch = source.read();
@@ -201,7 +233,7 @@ public class JSON {
     }
     source.reset();
     System.out.println(str);
-      
+
     // Check if string is indicating true/false/null
     if (str.equals("null")) {
       return JSONConstant.NULL;
@@ -212,15 +244,24 @@ public class JSON {
     } else {
       throw new ParseException("Illegal constant value", pos);
     }
-}
+  } // parseConstant
 
+  /**
+   * Parses integer value, calling on parseReal if a dot is detected
+   * 
+   * @param source
+   * @param ch
+   * @return
+   * @throws IOException
+   * @throws ParseException
+   */
   public static JSONValue parseNumber(Reader source, int ch) throws IOException, ParseException {
-    String numStr = String.valueOf((char)ch);
+    String numStr = String.valueOf((char) ch);
     // bad solution
     source.mark(1);
     ch = source.read();
     while (ch >= Character.valueOf('0') && ch <= Character.valueOf('9')) {
-      numStr += (char)ch;
+      numStr += (char) ch;
       source.mark(1);
       ch = source.read();
     }
@@ -230,34 +271,37 @@ public class JSON {
     source.reset();
     // if it's not digit or decimal, throw exception
     if (ch >= Character.valueOf('0') && ch <= Character.valueOf('9') && ch != Character.valueOf('.')) {
-      throw new ParseException("Illegal character " + (char)ch, pos);
+      throw new ParseException("Illegal character " + (char) ch, pos);
     }
     // if we come to end of file, throw exception
     if (ch == -1) {
       throw new ParseException("Unexpected end", pos);
     }
     return new JSONInteger(new BigInteger(numStr.trim()));
-  }
+  } // parseNumber
 
+  /**
+   * Parses decimal value
+   * 
+   * @param source
+   * @param numStr
+   * @return
+   * @throws IOException
+   * @throws ParseException
+   */
   public static JSONReal parseReal(Reader source, String numStr) throws IOException, ParseException {
     int ch = source.read();
     numStr += '.';
     while (ch >= Character.valueOf('0') && ch <= Character.valueOf('9')) {
-      numStr += (char)ch;
+      numStr += (char) ch;
       source.mark(1);
       ch = source.read();
     }
 
     source.reset();
     return new JSONReal(numStr);
+  } // ParseReal
 
-    // Comma case
-    // if (ch == Character.valueOf(',') || ch == Character.valueOf(']') || ch == Character.valueOf('}') || ch == Character) {
-    //   return new JSONReal(numStr);
-    // } else {
-    //   throw new ParseException("Illegal character " + (char)ch, pos);
-    // }
-  }
   /**
    * Get the next character from source, skipping over whitespace.
    */

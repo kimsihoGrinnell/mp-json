@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 
 /**
  * JSON reals.
+ * 
  * @author Samuel A. Rebelsky
  * @author Candice Lu
  * @author Siho Kim

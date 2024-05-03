@@ -1,8 +1,9 @@
 /**
  * Simple, immutable, key/value pairs
+ * 
  * @author Samuel A. Rebelsky
  */
-public class KVPair<K,V> {
+public class KVPair<K, V> {
 
   // +--------+------------------------------------------------------
   // | Fields |
@@ -40,13 +41,13 @@ public class KVPair<K,V> {
   @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object other) {
-    return ((other instanceof KVPair) && (this.equals((KVPair<K,V>) other)));
+    return ((other instanceof KVPair) && (this.equals((KVPair<K, V>) other)));
   } // equals(Object)
 
   /**
    * Compare for equality.
    */
-  public boolean equals(KVPair<K,V> other) {
+  public boolean equals(KVPair<K, V> other) {
     return this == other;
   } // equals(KVPair<K,V>)
 

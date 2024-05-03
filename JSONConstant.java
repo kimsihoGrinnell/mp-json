@@ -2,6 +2,7 @@ import java.io.PrintWriter;
 
 /**
  * JSON constants.
+ * 
  * @author Samuel A. Rebelsky
  * @author Candice Lu
  * @author Siho Kim

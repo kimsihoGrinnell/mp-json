@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 /**
  * JSON arrays.
+ * 
  * @author Samuel A. Rebelsky
  * @author Candice Lu
  * @author Siho Kim
@@ -28,7 +29,7 @@ public class JSONArray implements JSONValue {
    */
   public JSONArray() {
     this.values = new ArrayList<JSONValue>();
-  } // JSONArray() 
+  } // JSONArray()
 
   // +-------------------------+-------------------------------------
   // | Standard object methods |
@@ -42,7 +43,7 @@ public class JSONArray implements JSONValue {
     for (int i = 0; i < this.values.size(); i++) {
       output = output + this.values.get(i).toString() + ",\n";
     }
-     return output + "]";
+    return output + "]";
   } // toString()
 
   /**
